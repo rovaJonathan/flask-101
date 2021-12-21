@@ -42,3 +42,37 @@ class TestViews(TestCase):
     #     product = response.json
     #     self.assertEqual(response.status_code, 404)
     #     self.assertIsNone(product)
+
+    def test_create_product(self):
+        response = self.client.post("/api/v1/products", json={'name': 'Youtube'})
+        product = response.json
+        self.assertEqual(response.status_code, 201)
+        self.assertIsInstance(product, dict)
+        self.assertEqual(product['name'], 'Youtube')
+
+    def test_create_product_validation_error(self):
+        response_1 = self.client.post("/api/v1/products", json={'name': 2})
+        product_1 = response_1.json
+        self.assertEqual(response_1.status_code, 422)
+        self.assertIsNone(product_1)
+
+        response_2 = self.client.post("/api/v1/products", json={'name': ''})
+        product_2 = response_2.json
+        self.assertEqual(response_2.status_code, 422)
+        self.assertIsNone(product_2)
+
+    def test_create_product_bad_request(self):
+        response_1 = self.client.post("/api/v1/products", json={'other': 2})
+        product_1 = response_1.json
+        self.assertEqual(response_1.status_code, 400)
+        self.assertIsNone(product_1)
+
+        response_2 = self.client.post("/api/v1/products", json={'other': 'what'})
+        product_2 = response_2.json
+        self.assertEqual(response_2.status_code, 400)
+        self.assertIsNone(product_2)
+
+        response_3 = self.client.post("/api/v1/products")
+        product_3 = response_3.json
+        self.assertEqual(response_3.status_code, 400)
+        self.assertIsNone(product_3)
