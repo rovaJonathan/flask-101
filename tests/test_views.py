@@ -25,3 +25,13 @@ class TestViews(TestCase):
         message = response.json
         self.assertEqual(set(message),set({"message": "Product not found"})) # 2 is not a mistake here.
         self.assertEqual(response.status_code, 404)
+
+    # def test_delete_success_one_product(self):
+    #     response = self.client.delete("/api/v1/product/2")
+    #     self.assertEqual(response.status_code, 204)
+        
+    # def test_delete_failed_one_product(self):
+    #     response = self.client.delete("/api/v1/product/2")
+    #     message = response.json
+    #     self.assertEqual(set(message),set({"message": "Product not found"})) 
+    #     self.assertEqual(response.status_code, 404)
