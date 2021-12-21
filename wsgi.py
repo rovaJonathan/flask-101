@@ -16,3 +16,9 @@ def hello():
 def products():
     result = jsonify(list(PRODUCTS.values()))
     return result
+
+@app.route('/api/v1/product/<int:id>')
+def getProduct(id):
+    if id not in PRODUCTS.keys():
+        return "Product not found", 404
+    return jsonify(PRODUCTS[id])
