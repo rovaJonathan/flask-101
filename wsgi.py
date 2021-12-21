@@ -18,7 +18,15 @@ def products():
     return result
 
 @app.route('/api/v1/product/<int:id>')
-def getProduct(id):
+def get_product(id):
     if id not in PRODUCTS.keys():
         return jsonify({"message": "Product not found"}), 404
     return jsonify(PRODUCTS[id])
+
+@app.route('/api/v1/product/<int:id>', methods=["DELETE"])
+def delete_product(id):
+    if id not in PRODUCTS.keys():
+        return jsonify({"message": "Product not found"}), 404
+    else:
+        del PRODUCTS[id]
+    return jsonify({}), 204
