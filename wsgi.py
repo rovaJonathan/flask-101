@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, Request, abort
+from flask import Flask, jsonify, request, abort
 import itertools
 
 app = Flask(__name__)
@@ -34,3 +34,22 @@ def delete_one_product(id):
     if product is None:
         abort(404)
     return '', 204
+
+@app.route(f'/api/v1/products', methods=['POST'])
+def create_product():
+    payload = request.get_json()
+
+    if payload is None:
+        abort(400)
+
+    name = payload.get('name')
+
+    if name is None:
+        abort(400)
+
+    if name == '' or not isinstance(name, str):
+        abort(422)
+
+    next_id = next(IDENTIFIER_GENERATOR)
+    PRODUCTS[next_id] = {'id' : next_id , 'name' : name }
+    return jsonify(PRODUCTS[next_id]), 201
