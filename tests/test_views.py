@@ -76,3 +76,33 @@ class TestViews(TestCase):
         product_3 = response_3.json
         self.assertEqual(response_3.status_code, 400)
         self.assertIsNone(product_3)
+
+    def test_update_product(self):
+        update_response = self.client.patch("/api/v1/products/1", json={'name': 'Netflix'})
+        update_product = update_response.json
+        self.assertEqual(update_response.status_code, 204)
+        self.assertIsNone(update_product)
+
+        read_response = self.client.get("/api/v1/products/1")
+        product = read_response.json
+        self.assertEqual(read_response.status_code, 200)
+        self.assertIsInstance(product, dict)
+        self.assertEqual(product['name'], 'Netflix')
+
+    def test_update_product_not_found(self):
+        response = self.client.patch("/api/v1/products/20", json={'name': 'Not exist'})
+        product = response.json
+        self.assertIsNone(product)
+        self.assertEqual(response.status_code, 404)
+
+    def test_update_product_validation_error(self):
+        response = self.client.patch("/api/v1/products/1", json={'name': ''})
+        product = response.json
+        self.assertEqual(response.status_code, 422)
+        self.assertIsNone(product)
+
+    def test_update_product_bad_request(self):
+        response = self.client.patch("/api/v1/products/1", json={4: 'Here'})
+        product = response.json
+        self.assertIsNone(product)
+        self.assertEqual(response.status_code, 400)

@@ -53,3 +53,25 @@ def create_product():
     next_id = next(IDENTIFIER_GENERATOR)
     PRODUCTS[next_id] = {'id' : next_id , 'name' : name }
     return jsonify(PRODUCTS[next_id]), 201
+
+
+@app.route(f'/api/v1/products/<int:id>', methods=['PATCH'])
+def update_product(id):
+    data = request.get_json()
+    if data is None:
+        abort(400)
+
+    name = data.get('name')
+
+    if name is None:
+        abort(400)
+
+    if name == '' or not isinstance(name, str):
+        abort(422)
+
+    if id not in PRODUCTS.keys():
+        abort(404)
+
+    PRODUCTS[id]['name'] = name
+
+    return '', 204
